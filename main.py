@@ -15,7 +15,7 @@ def train(model, x_train, y_labels, loss_fct, optimizer, device, epochs = 1000):
         
         outputs = model(x_train)
         y_onehot = torch.nn.functional.one_hot(y_labels, num_classes=model.output_dim).float()
-        loss = loss_fct(outputs, y_onehot)
+        loss = loss_fct(outputs, y_labels)
         
 
         loss.backward()
@@ -55,8 +55,11 @@ def run(p, hidden_dim, alpha=0.5, seed=0, activation="quadratic", lr=1e-3, epoch
     train_dataset, test_dataset = split_dataset(tensors.x, tensors.y, alpha=alpha,seed=seed)
 
     model = ModularMLP(p=p, hidden_dim=hidden_dim, activation=activation).to(device)
-    loss_fct = torch.nn.MSELoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=lr)
+    #loss_fct = torch.nn.MSELoss()
+    loss_fct = torch.nn.CrossEntropyLoss()
+    #optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
+    
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     train(model=model, x_train=train_dataset.x, y_labels=train_dataset.y, loss_fct=loss_fct, optimizer=optimizer, device=device, epochs=epochs)
 
@@ -67,10 +70,10 @@ def run(p, hidden_dim, alpha=0.5, seed=0, activation="quadratic", lr=1e-3, epoch
 
 if __name__ == "__main__":
     model, results = run(
-        p=97,
-        hidden_dim=512,
-        alpha=0.45,
-        seed=42,
+        p=11,
+        hidden_dim=32,
+        alpha=0.50,
+        seed=0,
         activation="quadratic",
         lr=1e-2,
         epochs=2000,
