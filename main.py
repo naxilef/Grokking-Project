@@ -11,16 +11,16 @@ def train(model, x_train, y_labels, loss_fct, optimizer, epochs = 1000):
         optimizer.zero_grad()
         
         outputs = model(x_train)
-        y_onehot = torch.nn.functional.one_hot(y_labels, num_classes=model.output_dim).float()
-        loss = loss_fct(outputs, y_onehot)
+        #y_onehot = torch.nn.functional.one_hot(y_labels, num_classes=model.output_dim).float() #
+        loss = loss_fct(outputs, y_labels)
         
 
         loss.backward()
         optimizer.step()
 
         losses.append(loss.item())
-        if (epoch + 1) % 10 == 0:
-            print(f'Epoch [{epoch + 1}/{epochs}], Loss: {loss.item():.4f}')
+        if (epoch + 1) % 1000 == 0:
+            print(f'Epoch [{epoch + 1}/{epochs}], Loss: {loss.item():.16f}')
 
     return losses    
 
@@ -43,10 +43,17 @@ def run(p, hidden_dim, alpha=0.5, seed=0, activation="quadratic", lr=1e-3, epoch
     train_dataset, test_dataset = split_dataset(tensors.x, tensors.y, alpha=alpha,seed=seed)
 
     model = ModularMLP(p=p, hidden_dim=hidden_dim, activation=activation)
+ 
     loss_fct = torch.nn.MSELoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=lr)
 
-    train(model=model, x_train=train_dataset.x, y_labels=train_dataset.y, loss_fct=loss_fct, optimizer=optimizer, epochs=epochs)
+    y_train_onehot = torch.nn.functional.one_hot(
+        train_dataset.y, num_classes=p
+    ).float()
+
+    #loss_fct = torch.nn.CrossEntropyLoss()
+    #optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    train(model=model, x_train=train_dataset.x, y_labels=y_train_onehot, loss_fct=loss_fct, optimizer=optimizer, epochs=epochs)
 
     results = evaluate(model=model, x_test=test_dataset.x, y_test=test_dataset.y)
 
@@ -55,14 +62,15 @@ def run(p, hidden_dim, alpha=0.5, seed=0, activation="quadratic", lr=1e-3, epoch
 
 if __name__ == "__main__":
     model, results = run(
-        p=11,
-        hidden_dim=32,
+        p=97,
+        hidden_dim=512,
         alpha=0.5,
         seed=0,
         activation="quadratic",
         lr=1e-2,
-        epochs=100000,
-        )
+        epochs=200000,
+    )
+    print("Final test accuracy:", results)
     
 
 
