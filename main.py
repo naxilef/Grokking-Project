@@ -105,6 +105,7 @@ def plot_losses(history):
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
+    plt.savefig("test_train_loss.png")
     plt.show()
 
 def plot_accuracy(history):
@@ -120,6 +121,7 @@ def plot_accuracy(history):
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
+    plt.savefig("test_train_accuracy.png")
     plt.show()
 
 
