@@ -85,7 +85,7 @@ def run(p, hidden_dim, alpha=0.5, seed=0, activation="quadratic", lr=1e-3, epoch
     loss_fct = torch.nn.MSELoss()
     #loss_fct = torch.nn.CrossEntropyLoss()
     
-    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=0.1)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=0.01)
     #optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     #optimizer = torch.optim.SGD(model.parameters(), lr=lr)
 
@@ -109,12 +109,10 @@ def plot_losses(history):
     plt.show()
 
 def plot_accuracy(history):
-    train_acc = [a * 100 for a in history["train_accuracy"]]
-    test_acc = [a * 100 for a in history["test_accuracy"]]
 
     plt.figure(figsize=(6, 4))
-    plt.plot(history["epoch"], train_acc, label="Train accuracy")
-    plt.plot(history["epoch"], test_acc, label="Test accuracy")
+    plt.plot(history["epoch"], history["train_accuracy"], label="Train accuracy")
+    plt.plot(history["epoch"], history["test_accuracy"], label="Test accuracy")
     plt.xlabel("Epoch")
     plt.ylabel("Accuracy (%)")
     plt.title("Figure 1(c): Train and Test Accuracy")
@@ -132,7 +130,7 @@ if __name__ == "__main__":
         alpha=0.49,
         seed=21,
         activation="quadratic",
-        lr=1e-4,
+        lr=1e-2,
         epochs=2000,
         )
     plot_losses(history)
