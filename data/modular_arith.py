@@ -32,13 +32,13 @@ class ModularArithmeticDataset(Dataset):
     def __getitem__(self, index):
         return self.x[index], self.y[index]
     
-def generate_all_pair(p):
-    values = torch.arange(p)
-    grid_a, grid_b = torch.meshgrid(values, values, indexing="ij")
-    return grid_a.reshape(-1), grid_b.reshape(-1)
+def generate_all_pairs(p):
+    a = torch.arange(p).repeat_interleave(p)
+    b = torch.arange(p).repeat(p)
+    return a, b
 
 def make_modular_dataset(p, fct):
-    a, b = generate_all_pair(p)
+    a, b = generate_all_pairs(p)
     x = encode_pair(a, b, p)
     y = fct(a, b, p).long()
     return ModularArithmeticTensors(a,b,x,y)
