@@ -33,9 +33,15 @@ class ModularArithmeticDataset(Dataset):
         return self.x[index], self.y[index]
     
 def generate_all_pairs(p):
-    a = torch.arange(p).repeat_interleave(p)
-    b = torch.arange(p).repeat(p)
-    return a, b
+    a = []
+    b = []
+    
+    for i in range(p):
+        for j in range(p):
+            a.append(i)
+            b.append(j)
+    
+    return torch.tensor(a), torch.tensor(b)
 
 def make_modular_dataset(p, fct):
     a, b = generate_all_pairs(p)
