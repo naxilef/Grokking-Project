@@ -39,3 +39,8 @@ class ModularMLP(nn.Module):
         z1 = self.activation(h1)
         h2 = self.W2(z1) / self.hidden_dim
         return h2 
+
+    def hidden(self, x: torch.Tensor) -> torch.Tensor:
+        h1 = self.W1(x) / self.input_dim ** (1/2)
+        z1 = self.activation(h1)
+        return z1 
